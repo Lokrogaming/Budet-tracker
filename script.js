@@ -6,14 +6,32 @@ window.onload = function() {
         document.getElementById("budget").value = settings.budget;
         document.getElementById("interval").value = settings.interval;
 
-        // Berechnung der Zeitspanne seit dem letzten Besuch
         let lastVisitDate = new Date(localStorage.getItem("lastVisitDate"));
         if (lastVisitDate) {
             let daysPassed = calculateDaysPassed(lastVisitDate);
             updateBudget(settings, daysPassed);
         }
     }
+
+    let savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('darkmode');
+        document.getElementById('themeToggle').checked = true;
+    }
+
+    document.getElementById('themeToggle').addEventListener('change', toggleTheme);
 };
+
+// Umschalten zwischen Light und Dark Mode
+function toggleTheme() {
+    if (document.getElementById('themeToggle').checked) {
+        document.body.classList.add('darkmode');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.body.classList.remove('darkmode');
+        localStorage.setItem('theme', 'light');
+    }
+}
 
 // EventListener für den "Speichern"-Button
 document.getElementById("saveButton").addEventListener("click", function() {
@@ -34,57 +52,48 @@ function saveSettings() {
     const settings = {
         currency: currency,
         budget: parseFloat(budget),
-        interval: interval, // Das Intervall wird hier gespeichert
-        remaining: parseFloat(budget) // Start = Budget
+        interval: interval,
+        remaining: parseFloat(budget)
     };
 
     try {
-        localStorage.setItem("budgetSettings", JSON.stringify(settings));  // Speichern der Einstellungen
-        localStorage.setItem("lastVisitDate", new Date());  // Speichert das Datum des letzten Besuchs
+        localStorage.setItem("budgetSettings", JSON.stringify(settings));
+        localStorage.setItem("lastVisitDate", new Date());
         alert("Einstellungen gespeichert!");
-        showSuccessMessage();  // Erfolgsnachricht anzeigen
-        updateBudgetDisplay(settings); // Budget im Fortschrittsbalken anzeigen
+        updateBudgetDisplay(settings);
 
-        // Warnung bei 1% verbleibendem Budget
         if (settings.remaining <= settings.budget * 0.01) {
             showWarning("Achtung: Nur noch 1% deines Budgets übrig!");
         }
 
-        // Warnung bei aufgebrauchtem Budget
         if (settings.remaining <= 0) {
             showWarning("Warnung: Dein Budget ist aufgebraucht!");
         }
 
-        // Intervallverwaltung
-        resetBudgetAtInterval(settings); // Intervall zurücksetzen
+        resetBudgetAtInterval(settings);
     } catch (error) {
-        alert("Fehler beim Speichern: " + error.message);  // Fehlerbehandlung
+        alert("Fehler beim Speichern: " + error.message);
     }
 }
 
-// Funktion zum Berechnen der vergangenen Tage
 function calculateDaysPassed(lastVisitDate) {
     const currentDate = new Date();
     const timeDifference = currentDate - lastVisitDate;
-    return Math.floor(timeDifference / (1000 * 3600 * 24)); // Umrechnen in Tage
+    return Math.floor(timeDifference / (1000 * 3600 * 24));
 }
 
-// Intervallverwaltung - Budget zurücksetzen
 function resetBudgetAtInterval(settings) {
-    let currentDate = new Date();
-    let lastVisitDate = new Date(localStorage.getItem("lastVisitDate"));
     let intervalInDays = getIntervalInDays(settings.interval);
-
-    // Berechnen, ob das Budget zurückgesetzt werden soll
+    let lastVisitDate = new Date(localStorage.getItem("lastVisitDate"));
     let daysPassed = calculateDaysPassed(lastVisitDate);
+
     if (daysPassed >= intervalInDays) {
-        settings.remaining = settings.budget; // Budget zurücksetzen
-        localStorage.setItem("budgetSettings", JSON.stringify(settings)); // Speichern der neuen Einstellungen
-        showSuccessMessage("Dein Budget wurde zurückgesetzt!");
+        settings.remaining = settings.budget;
+        localStorage.setItem("budgetSettings", JSON.stringify(settings));
+        alert("Dein Budget wurde zurückgesetzt!");
     }
 }
 
-// Funktion, um das Intervall in Tagen zu berechnen
 function getIntervalInDays(interval) {
     switch (interval) {
         case 'daily': return 1;
@@ -95,49 +104,27 @@ function getIntervalInDays(interval) {
     }
 }
 
-// Funktion zum Anzeigen der Erfolgsmeldung
-function showSuccessMessage(message = "Einstellungen erfolgreich gespeichert!") {
-    const messageElement = document.createElement('div');
-    messageElement.textContent = message;
-    messageElement.classList.add("savedMessage");
-    document.body.appendChild(messageElement);
-
-    // Zeige Nachricht für eine Sekunde und entferne sie dann
-    setTimeout(() => {
-        messageElement.style.display = 'block';
-        setTimeout(() => {
-            messageElement.style.display = 'none';
-        }, 2000);
-    }, 100);
-}
-
-// Funktion zum Anzeigen der Warnungen
-function showWarning(message) {
-    const warningMessage = document.createElement('div');
-    warningMessage.textContent = message;
-    warningMessage.classList.add("warningMessage");
-    document.body.appendChild(warningMessage);
-
-    // Zeige Warnung für 3 Sekunden und entferne sie dann
-    setTimeout(() => {
-        warningMessage.style.display = 'block';
-        setTimeout(() => {
-            warningMessage.style.display = 'none';
-        }, 3000);
-    }, 100);
-}
-
-// Funktion zum Aktualisieren der Budgetanzeige
 function updateBudgetDisplay(settings) {
-    const totalBudget = settings.budget;
-    const remaining = settings.remaining;
-    const progressBar = document.getElementById("progressBar");
-    const remainingAmount = document.getElementById("remainingAmount");
+    document.getElementById('remainingAmount').textContent = settings.remaining + "€";
+    const percentageRemaining = settings.remaining / settings.budget * 100;
+    updateProgressBar(percentageRemaining);
+}
 
-    // Berechne den Fortschritt
-    let progress = (remaining / totalBudget) * 100;
-    progressBar.style.width = progress + "%"; // Setzt die Breite des Balkens
+function updateProgressBar(percentage) {
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.width = percentage + "%";
+    if (percentage > 50) {
+        progressBar.style.backgroundColor = "green";
+    } else if (percentage > 20) {
+        progressBar.style.backgroundColor = "orange";
+    } else {
+        progressBar.style.backgroundColor = "red";
+    }
+}
 
-    // Zeige das verbleibende Budget an
-    remainingAmount.textContent = remaining + "€";
+function showWarning(message) {
+    let warningMessage = document.createElement("div");
+    warningMessage.classList.add("warningMessage");
+    warningMessage.textContent = message;
+    document.getElementById('budgetDashboard').appendChild(warningMessage);
 }
