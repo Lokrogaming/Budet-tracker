@@ -4,6 +4,7 @@ window.onload = function() {
     if (settings) {
         document.getElementById("currency").value = settings.currency;
         document.getElementById("budget").value = settings.budget;
+        document.getElementById("interval").value = settings.interval;
 
         // Berechnung der Zeitspanne seit dem letzten Besuch
         let lastVisitDate = new Date(localStorage.getItem("lastVisitDate"));
@@ -23,6 +24,7 @@ document.getElementById("saveButton").addEventListener("click", function() {
 function saveSettings() {
     const currency = document.getElementById("currency").value;
     const budget = document.getElementById("budget").value;
+    const interval = document.getElementById("interval").value;
 
     if (!budget || budget <= 0) {
         alert("Bitte ein gültiges Budget eingeben!");
@@ -32,6 +34,7 @@ function saveSettings() {
     const settings = {
         currency: currency,
         budget: parseFloat(budget),
+        interval: interval, // Das Intervall wird hier gespeichert
         remaining: parseFloat(budget) // Start = Budget
     };
 
@@ -51,23 +54,59 @@ function saveSettings() {
         if (settings.remaining <= 0) {
             showWarning("Warnung: Dein Budget ist aufgebraucht!");
         }
+
+        // Intervallverwaltung
+        resetBudgetAtInterval(settings); // Intervall zurücksetzen
     } catch (error) {
         alert("Fehler beim Speichern: " + error.message);  // Fehlerbehandlung
     }
 }
 
+// Funktion zum Berechnen der vergangenen Tage
+function calculateDaysPassed(lastVisitDate) {
+    const currentDate = new Date();
+    const timeDifference = currentDate - lastVisitDate;
+    return Math.floor(timeDifference / (1000 * 3600 * 24)); // Umrechnen in Tage
+}
+
+// Intervallverwaltung - Budget zurücksetzen
+function resetBudgetAtInterval(settings) {
+    let currentDate = new Date();
+    let lastVisitDate = new Date(localStorage.getItem("lastVisitDate"));
+    let intervalInDays = getIntervalInDays(settings.interval);
+
+    // Berechnen, ob das Budget zurückgesetzt werden soll
+    let daysPassed = calculateDaysPassed(lastVisitDate);
+    if (daysPassed >= intervalInDays) {
+        settings.remaining = settings.budget; // Budget zurücksetzen
+        localStorage.setItem("budgetSettings", JSON.stringify(settings)); // Speichern der neuen Einstellungen
+        showSuccessMessage("Dein Budget wurde zurückgesetzt!");
+    }
+}
+
+// Funktion, um das Intervall in Tagen zu berechnen
+function getIntervalInDays(interval) {
+    switch (interval) {
+        case 'daily': return 1;
+        case 'weekly': return 7;
+        case 'monthly': return 30;
+        case 'yearly': return 365;
+        default: return 1;
+    }
+}
+
 // Funktion zum Anzeigen der Erfolgsmeldung
-function showSuccessMessage() {
-    const message = document.createElement('div');
-    message.textContent = "Einstellungen erfolgreich gespeichert!";
-    message.classList.add("savedMessage");
-    document.body.appendChild(message);
+function showSuccessMessage(message = "Einstellungen erfolgreich gespeichert!") {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    messageElement.classList.add("savedMessage");
+    document.body.appendChild(messageElement);
 
     // Zeige Nachricht für eine Sekunde und entferne sie dann
     setTimeout(() => {
-        message.style.display = 'block';
+        messageElement.style.display = 'block';
         setTimeout(() => {
-            message.style.display = 'none';
+            messageElement.style.display = 'none';
         }, 2000);
     }, 100);
 }
