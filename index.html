@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Für den Graphen -->
 </head>
 <body>
     <div id="settingsContainer">
         <h1>Budget Tracker</h1>
         
+        <!-- Budget Setup Form -->
         <div class="form-group">
             <label for="currency">Währung:</label>
             <select id="currency">
@@ -49,6 +51,34 @@
             <div id="progressBar"></div>
         </div>
         <p>Verbleibendes Budget: <span id="remainingAmount">0€</span></p>
+
+        <!-- Ausgabe Eingabeformular -->
+        <div id="expenseFormContainer" class="hidden">
+            <h3>Ausgabe hinzufügen</h3>
+            <div class="form-group">
+                <label for="expenseAmount">Betrag:</label>
+                <input type="number" id="expenseAmount" placeholder="Betrag eingeben" min="0">
+            </div>
+            <div class="form-group">
+                <label for="expenseReason">Grund:</label>
+                <input type="text" id="expenseReason" placeholder="Grund eingeben">
+            </div>
+            <div class="form-group">
+                <label for="expenseDate">Datum:</label>
+                <input type="date" id="expenseDate">
+            </div>
+            <button id="submitExpenseButton">Ausgabe hinzufügen</button>
+        </div>
+
+        <button id="addExpenseButton">Ausgabe hinzufügen</button>
+    </div>
+
+    <!-- Analyse Fenster -->
+    <div id="analysisWindow" class="hidden">
+        <h2>Analyse der Ausgaben</h2>
+        <canvas id="expenseChart"></canvas>
+        <h3>Letzte Ausgaben</h3>
+        <ul id="expenseList"></ul>
     </div>
 
     <script src="script.js"></script>
