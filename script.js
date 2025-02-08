@@ -84,3 +84,31 @@ function checkBudgetWarnings(remaining, budget) {
 window.onbeforeunload = function() {
     localStorage.setItem("lastVisitDate", new Date());
 };
+
+// Speichern der Einstellungen
+function saveSettings() {
+    const currency = document.getElementById("currency").value;
+    const budget = document.getElementById("budget").value;
+
+    if (!budget || budget <= 0) {
+        alert("Bitte ein gültiges Budget eingeben!");
+        return;
+    }
+
+    const settings = {
+        currency: currency,
+        budget: parseFloat(budget),
+        remaining: parseFloat(budget) // Start = Budget
+    };
+
+    localStorage.setItem("budgetSettings", JSON.stringify(settings));
+    localStorage.setItem("lastVisitDate", new Date());  // Speichert das Datum des letzten Besuchs
+    alert("Einstellungen gespeichert!");
+    console.log("Einstellungen gespeichert: ", settings);
+}
+
+// Überprüfen, ob der Knopf zum Speichern korrekt funktioniert
+document.getElementById("saveButton").addEventListener("click", function() {
+    console.log("Speichern-Knopf gedrückt!");
+    saveSettings();
+});
