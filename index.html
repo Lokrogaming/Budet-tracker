@@ -7,40 +7,48 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Budget Tracker</h1>
-
     <div id="settingsContainer">
-        <h2>Budget Einstellungen</h2>
-        <label for="currency">Währung:</label>
-        <select id="currency">
-            <option value="EUR">Euro</option>
-            <option value="USD">US Dollar</option>
-            <option value="GBP">Britische Pfund</option>
-        </select>
+        <h1>Budget Tracker</h1>
+        
+        <div class="form-group">
+            <label for="currency">Währung:</label>
+            <select id="currency">
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+                <option value="GBP">GBP</option>
+            </select>
+        </div>
 
-        <label for="interval">Intervall:</label>
-<select id="interval">
-    <option value="daily">Täglich</option>
-    <option value="weekly">Wöchentlich</option>
-    <option value="monthly">Monatlich</option>
-    <option value="yearly">Jährlich</option>
-</select>
+        <div class="form-group">
+            <label for="budget">Budget:</label>
+            <input type="number" id="budget" placeholder="Gib dein Budget ein" min="0">
+        </div>
 
-
-        <label for="budget">Budget (in EUR):</label>
-        <input type="number" id="budget" min="0" step="0.01" placeholder="Gib dein Budget ein">
+        <div class="form-group">
+            <label for="interval">Intervall:</label>
+            <select id="interval">
+                <option value="daily">Täglich</option>
+                <option value="weekly">Wöchentlich</option>
+                <option value="monthly">Monatlich</option>
+                <option value="yearly">Jährlich</option>
+            </select>
+        </div>
 
         <button id="saveButton">Speichern</button>
+
+        <!-- Light/Dark Mode Toggle -->
+        <div class="theme-toggle">
+            <label for="themeToggle">Wechsle zu Darkmode</label>
+            <input type="checkbox" id="themeToggle">
+        </div>
     </div>
 
-    <div id="budgetDashboard" style="display:none;">
+    <div id="budgetDashboard">
         <h2>Dein Budget</h2>
-        <p id="remainingBudget">Verbleibendes Budget: <span id="remainingAmount">1000€</span></p>
-
-        <!-- Fortschrittsbalken -->
-        <div id="budgetProgressContainer">
+        <div id="progressContainer">
             <div id="progressBar"></div>
         </div>
+        <p>Verbleibendes Budget: <span id="remainingAmount">0€</span></p>
     </div>
 
     <script src="script.js"></script>
