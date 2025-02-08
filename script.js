@@ -14,76 +14,10 @@ window.onload = function() {
     }
 };
 
-// Berechnet, wie viele Tage seit dem letzten Besuch vergangen sind
-function calculateDaysPassed(lastVisitDate) {
-    const currentDate = new Date();
-    const timeDiff = currentDate - lastVisitDate;
-    return Math.floor(timeDiff / (1000 * 3600 * 24)); // in Tagen
-}
-
-// Budget je nach Zyklus (täglich, wöchentlich, monatlich, jährlich) anpassen
-function updateBudget(settings, daysPassed) {
-    if (!settings || !settings.budget) return;
-
-    let cycle = document.getElementById("cycle").value;
-    let dailyBudget = settings.budget;
-    let updatedBudget = settings.remaining;
-
-    switch (cycle) {
-        case "daily":
-            updatedBudget += dailyBudget * daysPassed;
-            break;
-        case "weekly":
-            updatedBudget += dailyBudget * 7 * daysPassed;
-            break;
-        case "monthly":
-            updatedBudget += dailyBudget * 30 * daysPassed;
-            break;
-        case "yearly":
-            updatedBudget += dailyBudget * 365 * daysPassed;
-            break;
-    }
-
-    settings.remaining = updatedBudget;
-    localStorage.setItem("budgetSettings", JSON.stringify(settings));
-}
-
-// Funktion zur Eingabe einer Ausgabe
-function addExpense() {
-    const amount = parseFloat(prompt("Betrag der Ausgabe eingeben:"));
-    if (!amount || amount <= 0) {
-        alert("Ungültige Eingabe!");
-        return;
-    }
-
-    let settings = JSON.parse(localStorage.getItem("budgetSettings"));
-    if (!settings) {
-        alert("Bitte zuerst ein Budget festlegen!");
-        return;
-    }
-
-    settings.remaining -= amount;
-    localStorage.setItem("budgetSettings", JSON.stringify(settings));
-
-    // Warnungen anzeigen
-    checkBudgetWarnings(settings.remaining, settings.budget);
-}
-
-// Funktion zur Prüfung der Budget-Warnungen
-function checkBudgetWarnings(remaining, budget) {
-    const onePercent = budget * 0.01;
-    
-    if (remaining <= 0) {
-        sendNotification("⚠️ Budget aufgebraucht!");
-    } else if (remaining <= onePercent) {
-        sendNotification("⚠️ Nur noch 1 % deines Budgets übrig!");
-    }
-}
-
-// Speichern des aktuellen Datums, wenn die Seite verlassen wird
-window.onbeforeunload = function() {
-    localStorage.setItem("lastVisitDate", new Date());
-};
+// EventListener für den "Speichern"-Button
+document.getElementById("saveButton").addEventListener("click", function() {
+    saveSettings();  // Funktion zum Speichern der Einstellungen aufrufen
+});
 
 // Speichern der Einstellungen
 function saveSettings() {
@@ -101,14 +35,70 @@ function saveSettings() {
         remaining: parseFloat(budget) // Start = Budget
     };
 
-    localStorage.setItem("budgetSettings", JSON.stringify(settings));
-    localStorage.setItem("lastVisitDate", new Date());  // Speichert das Datum des letzten Besuchs
-    alert("Einstellungen gespeichert!");
-    console.log("Einstellungen gespeichert: ", settings);
+    try {
+        localStorage.setItem("budgetSettings", JSON.stringify(settings));  // Speichern der Einstellungen
+        localStorage.setItem("lastVisitDate", new Date());  // Speichert das Datum des letzten Besuchs
+        alert("Einstellungen gespeichert!");
+        showSuccessMessage();  // Erfolgsnachricht anzeigen
+        updateBudgetDisplay(settings); // Budget im Fortschrittsbalken anzeigen
+
+        // Warnung bei 1% verbleibendem Budget
+        if (settings.remaining <= settings.budget * 0.01) {
+            showWarning("Achtung: Nur noch 1% deines Budgets übrig!");
+        }
+
+        // Warnung bei aufgebrauchtem Budget
+        if (settings.remaining <= 0) {
+            showWarning("Warnung: Dein Budget ist aufgebraucht!");
+        }
+    } catch (error) {
+        alert("Fehler beim Speichern: " + error.message);  // Fehlerbehandlung
+    }
 }
 
-// Überprüfen, ob der Knopf zum Speichern korrekt funktioniert
-document.getElementById("saveButton").addEventListener("click", function() {
-    console.log("Speichern-Knopf gedrückt!");
-    saveSettings();
-});
+// Funktion zum Anzeigen der Erfolgsmeldung
+function showSuccessMessage() {
+    const message = document.createElement('div');
+    message.textContent = "Einstellungen erfolgreich gespeichert!";
+    message.classList.add("savedMessage");
+    document.body.appendChild(message);
+
+    // Zeige Nachricht für eine Sekunde und entferne sie dann
+    setTimeout(() => {
+        message.style.display = 'block';
+        setTimeout(() => {
+            message.style.display = 'none';
+        }, 2000);
+    }, 100);
+}
+
+// Funktion zum Anzeigen der Warnungen
+function showWarning(message) {
+    const warningMessage = document.createElement('div');
+    warningMessage.textContent = message;
+    warningMessage.classList.add("warningMessage");
+    document.body.appendChild(warningMessage);
+
+    // Zeige Warnung für 3 Sekunden und entferne sie dann
+    setTimeout(() => {
+        warningMessage.style.display = 'block';
+        setTimeout(() => {
+            warningMessage.style.display = 'none';
+        }, 3000);
+    }, 100);
+}
+
+// Funktion zum Aktualisieren der Budgetanzeige
+function updateBudgetDisplay(settings) {
+    const totalBudget = settings.budget;
+    const remaining = settings.remaining;
+    const progressBar = document.getElementById("progressBar");
+    const remainingAmount = document.getElementById("remainingAmount");
+
+    // Berechne den Fortschritt
+    let progress = (remaining / totalBudget) * 100;
+    progressBar.style.width = progress + "%"; // Setzt die Breite des Balkens
+
+    // Zeige das verbleibende Budget an
+    remainingAmount.textContent = remaining + "€";
+}
