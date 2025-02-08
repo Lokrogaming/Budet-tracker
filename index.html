@@ -14,7 +14,8 @@
         <button id="startButton">Starten</button>
     </div>
 
-    <div id="budgetSettings" class="settings-container">
+    <!-- Modales Fenster für Budget-Einstellungen -->
+    <div id="budgetSettings" class="modal">
         <h2>Budget Einstellungen</h2>
         <form id="budgetForm">
             <label for="currency">Währung:</label>
@@ -38,12 +39,28 @@
         </form>
     </div>
 
-    <div id="analysisWindow" class="analysis-window">
+    <!-- Modales Fenster für Ausgaben-Eingabe -->
+    <div id="expenseWindow" class="modal" style="display:none;">
+        <h2>Ausgaben Eingeben</h2>
+        <form id="expenseForm">
+            <label for="expenseAmount">Betrag:</label>
+            <input type="number" id="expenseAmount" placeholder="Betrag eingeben" required />
+
+            <label for="expenseReason">Grund:</label>
+            <input type="text" id="expenseReason" placeholder="Grund der Ausgabe" required />
+
+            <button type="submit">Ausgabe Hinzufügen</button>
+        </form>
+    </div>
+
+    <!-- Analysebereich für Ausgaben (Graph ist standardmäßig versteckt) -->
+    <div id="analysisWindow" class="modal" style="display:none;">
         <h2>Analyse Ihrer Ausgaben</h2>
-        <canvas id="expenseChart"></canvas>
+        <canvas id="expenseChart" style="display:none;"></canvas>
         <button id="toggleGraphBtn">Graph anzeigen/verbergen</button>
     </div>
 
+    <!-- Licht-/Dunkelmodus-Schalter -->
     <div id="lightDarkMode">
         <button id="toggleMode">Light Mode / Dark Mode</button>
     </div>
