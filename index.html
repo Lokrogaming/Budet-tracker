@@ -4,81 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Für den Graphen -->
 </head>
 <body>
-    <div id="settingsContainer">
-        <h1>Budget Tracker</h1>
-        
-        <!-- Budget Setup Form -->
-        <div class="form-group">
+    <div id="intro" class="intro">
+        <h1>Willkommen zum Budget Tracker</h1>
+        <p>Nutzen Sie diese Website, um Ihre Finanzen einfach und übersichtlich zu verwalten. Passen Sie die Einstellungen nach Ihren Wünschen an und starten Sie Ihre Budgetplanung!</p>
+        <button id="startButton">Starten</button>
+    </div>
+
+    <div id="budgetSettings" class="settings-container">
+        <h2>Budget Einstellungen</h2>
+        <form id="budgetForm">
             <label for="currency">Währung:</label>
-            <select id="currency">
-                <option value="EUR">EUR</option>
-                <option value="USD">USD</option>
-                <option value="GBP">GBP</option>
+            <select id="currency" name="currency">
+                <option value="EUR">Euro (€)</option>
+                <option value="USD">Dollar ($)</option>
             </select>
-        </div>
 
-        <div class="form-group">
-            <label for="budget">Budget:</label>
-            <input type="number" id="budget" placeholder="Gib dein Budget ein" min="0">
-        </div>
+            <label for="amount">Betrag:</label>
+            <input type="number" id="amount" placeholder="Betrag eingeben" />
 
-        <div class="form-group">
-            <label for="interval">Intervall:</label>
-            <select id="interval">
+            <label for="interval">Budget-Zyklus:</label>
+            <select id="interval" name="interval">
                 <option value="daily">Täglich</option>
                 <option value="weekly">Wöchentlich</option>
                 <option value="monthly">Monatlich</option>
                 <option value="yearly">Jährlich</option>
             </select>
-        </div>
 
-        <button id="saveButton">Speichern</button>
-
-        <!-- Light/Dark Mode Toggle -->
-        <div class="theme-toggle">
-            <label for="themeToggle">Wechsle zu Darkmode</label>
-            <input type="checkbox" id="themeToggle">
-        </div>
+            <button type="submit">Speichern</button>
+        </form>
     </div>
 
-    <div id="budgetDashboard">
-        <h2>Dein Budget</h2>
-        <div id="progressContainer">
-            <div id="progressBar"></div>
-        </div>
-        <p>Verbleibendes Budget: <span id="remainingAmount">0€</span></p>
-
-        <!-- Ausgabe Eingabeformular -->
-        <div id="expenseFormContainer" class="hidden">
-            <h3>Ausgabe hinzufügen</h3>
-            <div class="form-group">
-                <label for="expenseAmount">Betrag:</label>
-                <input type="number" id="expenseAmount" placeholder="Betrag eingeben" min="0">
-            </div>
-            <div class="form-group">
-                <label for="expenseReason">Grund:</label>
-                <input type="text" id="expenseReason" placeholder="Grund eingeben">
-            </div>
-            <div class="form-group">
-                <label for="expenseDate">Datum:</label>
-                <input type="date" id="expenseDate">
-            </div>
-            <button id="submitExpenseButton">Ausgabe hinzufügen</button>
-        </div>
-
-        <button id="addExpenseButton">Ausgabe hinzufügen</button>
-    </div>
-
-    <!-- Analyse Fenster -->
-    <div id="analysisWindow" class="hidden">
-        <h2>Analyse der Ausgaben</h2>
+    <div id="analysisWindow" class="analysis-window">
+        <h2>Analyse Ihrer Ausgaben</h2>
         <canvas id="expenseChart"></canvas>
-        <h3>Letzte Ausgaben</h3>
-        <ul id="expenseList"></ul>
+        <button id="toggleGraphBtn">Graph anzeigen/verbergen</button>
+    </div>
+
+    <div id="lightDarkMode">
+        <button id="toggleMode">Light Mode / Dark Mode</button>
     </div>
 
     <script src="script.js"></script>
