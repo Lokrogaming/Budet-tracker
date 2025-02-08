@@ -5,24 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
 </head>
 <body>
     <h1>Budget Tracker</h1>
-    <label for="currency">Währung:</label>
-    <select id="currency">
-        <option value="€">Euro (€)</option>
-        <option value="$">US-Dollar ($)</option>
-        <option value="£">Britisches Pfund (£)</option>
-    </select>
 
-    <label for="budget">Budget:</label>
-    <input type="number" id="budget" placeholder="Betrag eingeben">
+    <div id="settingsContainer">
+        <h2>Budget Einstellungen</h2>
+        <label for="currency">Währung:</label>
+        <select id="currency">
+            <option value="EUR">Euro</option>
+            <option value="USD">US Dollar</option>
+            <option value="GBP">Britische Pfund</option>
+        </select>
 
-    <button id="saveButton">Speichern</button>
+        <label for="interval">Intervall:</label>
+<select id="interval">
+    <option value="daily">Täglich</option>
+    <option value="weekly">Wöchentlich</option>
+    <option value="monthly">Monatlich</option>
+    <option value="yearly">Jährlich</option>
+</select>
 
 
-    
+        <label for="budget">Budget (in EUR):</label>
+        <input type="number" id="budget" min="0" step="0.01" placeholder="Gib dein Budget ein">
+
+        <button id="saveButton">Speichern</button>
+    </div>
+
+    <div id="budgetDashboard" style="display:none;">
+        <h2>Dein Budget</h2>
+        <p id="remainingBudget">Verbleibendes Budget: <span id="remainingAmount">1000€</span></p>
+
+        <!-- Fortschrittsbalken -->
+        <div id="budgetProgressContainer">
+            <div id="progressBar"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
