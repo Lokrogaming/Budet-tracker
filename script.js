@@ -21,8 +21,8 @@ document.getElementById('budgetForm').addEventListener('submit', (e) => {
     const amount = parseFloat(document.getElementById('amount').value);
     const interval = document.getElementById('interval').value;
 
-    if (amount <= 0 || isNaN(amount)) {
-        alert('Bitte geben Sie ein gültiges Budget ein!');
+    if (isNaN(amount) || amount <= 0) {
+        alert('❌ Bitte geben Sie ein gültiges Budget ein!');
         return;
     }
 
@@ -32,7 +32,7 @@ document.getElementById('budgetForm').addEventListener('submit', (e) => {
     localStorage.setItem('budgetRemaining', amount);
     localStorage.setItem('budgetSet', 'true');
 
-    alert('Budget gespeichert!');
+    alert('✅ Budget erfolgreich gespeichert!');
     
     updateBudgetDisplay();
     document.getElementById('budgetSettings').style.display = 'none';
@@ -41,8 +41,7 @@ document.getElementById('budgetForm').addEventListener('submit', (e) => {
 
 // Überprüft, ob ein Budget existiert
 function checkBudget() {
-    const budgetSet = localStorage.getItem('budgetSet');
-    if (budgetSet) {
+    if (localStorage.getItem('budgetSet')) {
         document.getElementById('intro').style.display = 'none';
         document.getElementById('budgetSettings').style.display = 'none';
         document.getElementById('expenseWindow').style.display = 'block';
@@ -86,11 +85,11 @@ document.getElementById('expenseForm').addEventListener('submit', (e) => {
     e.preventDefault();
 
     const amount = parseFloat(document.getElementById('expenseAmount').value);
-    const reason = document.getElementById('expenseReason').value;
+    const reason = document.getElementById('expenseReason').value.trim();
     const date = document.getElementById('expenseDate').value;
 
-    if (amount <= 0 || isNaN(amount)) {
-        alert('Bitte geben Sie einen gültigen Betrag ein!');
+    if (isNaN(amount) || amount <= 0 || reason === '' || date === '') {
+        alert('❌ Bitte geben Sie gültige Ausgaben-Daten ein!');
         return;
     }
 
@@ -102,7 +101,7 @@ document.getElementById('expenseForm').addEventListener('submit', (e) => {
     expenseData.push({ date, amount, reason });
     localStorage.setItem('expenseData', JSON.stringify(expenseData));
 
-    alert(`✅ Ausgabe von ${amount}€ für "${reason}" hinzugefügt!`);
+    alert(`✅ Ausgabe von ${amount.toFixed(2)}€ für "${reason}" hinzugefügt!`);
 
     updateBudgetDisplay();
     renderChart();
@@ -112,6 +111,11 @@ document.getElementById('expenseForm').addEventListener('submit', (e) => {
 function renderChart() {
     const ctx = document.getElementById('expenseChart').getContext('2d');
     const data = JSON.parse(localStorage.getItem('expenseData')) || [];
+
+    if (data.length === 0) {
+        document.getElementById('chartContainer').style.display = 'none';
+        return;
+    }
 
     const labels = data.map(entry => entry.date);
     const values = data.map(entry => entry.amount);
