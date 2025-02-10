@@ -1,44 +1,47 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    text-align: center;
+    transition: background 0.5s, color 0.5s;
+}
+
+.darkmode {
+    background: #222;
+    color: #fff;
+}
+
+#loadingScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loadingScreen img {
+    width: 100px;
+    animation: fadeIn 1s ease-in-out infinite alternate;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
 }
 
 button {
     padding: 10px;
-    margin: 10px;
-    cursor: pointer;
-}
-
-input, select {
-    padding: 5px;
     margin: 5px;
+    transition: transform 0.3s;
 }
 
-#budgetDisplay {
-    font-size: 1.5em;
-    font-weight: bold;
-    padding: 20px;
-    border-radius: 10px;
+button:hover {
+    transform: scale(1.05);
 }
 
-/* Farbverlauf für das Budget */
-.green { background-color: #5cb85c; color: white; }
-.yellow { background-color: #f0ad4e; color: white; }
-.red { background-color: #d9534f; color: white; }
+.green { background: lightgreen; }
+.yellow { background: yellow; }
+.red { background: red; }
 
-/* Darkmode */
-.darkmode {
-    background-color: #222;
-    color: white;
-}
-
-/* Budget-Übersicht */
-#budgetOverview {
-    background-color: #eee;
-    padding: 10px;
-    margin: 10px auto;
-    width: 50%;
-    border-radius: 8px;
+#expenseForm input {
+    margin-bottom: 10px;
 }
