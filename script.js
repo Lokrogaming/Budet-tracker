@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Wenn das Budget bereits gesetzt wurde, den Bereich anzeigen
     checkBudget();
+    
     // EventListener für das Starten des Budgeteinrichtungsformulars
     document.getElementById('startButton').addEventListener('click', () => {
         document.getElementById('intro').style.display = 'none';
@@ -24,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('budgetSettings').style.display = 'none';
             document.getElementById('expenseWindow').style.display = 'block';
             displayBudget();
+        } else {
+            alert("Bitte geben Sie einen gültigen Betrag ein.");
         }
     });
 
@@ -38,6 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
             saveExpense(expenseAmount, expenseReason, expenseDate);
             displayExpenses();
             updateBudgetDisplay();
+        } else {
+            alert("Die Ausgabe darf nicht negativ sein.");
         }
     });
 
@@ -46,6 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const chartContainer = document.getElementById('chartContainer');
         chartContainer.style.display = chartContainer.style.display === 'none' ? 'block' : 'none';
         createGraph();
+    });
+
+    // EventListener für den Reset-Button
+    document.getElementById('resetButton').addEventListener('click', () => {
+        resetAll();
     });
 });
 
@@ -151,4 +161,17 @@ function createGraph() {
             }]
         }
     });
+}
+
+// Reset alle Daten zurücksetzen
+function resetAll() {
+    if (confirm('Möchten Sie wirklich alle Daten zurücksetzen?')) {
+        localStorage.removeItem('budgetCurrency');
+        localStorage.removeItem('budgetAmount');
+        localStorage.removeItem('budgetInterval');
+        localStorage.removeItem('expenses');
+        
+        // Seite neu laden, um alles zu resetten
+        window.location.reload();
+    }
 }
