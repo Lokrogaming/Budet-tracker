@@ -4,65 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div id="intro" class="intro">
+
+    <div id="intro">
         <h1>Willkommen zum Budget Tracker</h1>
-        <p>Nutzen Sie diese Website, um Ihre Finanzen einfach und übersichtlich zu verwalten. Passen Sie die Einstellungen nach Ihren Wünschen an und starten Sie Ihre Budgetplanung!</p>
-        <button id="startButton">Starten</button>
+        <p>Verwalte dein Budget einfach und übersichtlich.</p>
+        <button id="startButton">Los geht’s</button>
     </div>
 
-    <!-- Modales Fenster für Budget-Einstellungen -->
-    <div id="budgetSettings" class="modal">
-        <h2>Budget Einstellungen</h2>
+    <!-- Budget-Einstellungen -->
+    <div id="budgetSettings" style="display: none;">
+        <h2>Budget einstellen</h2>
         <form id="budgetForm">
-            <label for="currency">Währung:</label>
-            <select id="currency" name="currency">
-                <option value="EUR">Euro (€)</option>
-                <option value="USD">Dollar ($)</option>
-            </select>
-
-            <label for="amount">Betrag:</label>
-            <input type="number" id="amount" placeholder="Betrag eingeben" />
-
-            <label for="interval">Budget-Zyklus:</label>
-            <select id="interval" name="interval">
-                <option value="daily">Täglich</option>
-                <option value="weekly">Wöchentlich</option>
-                <option value="monthly">Monatlich</option>
-                <option value="yearly">Jährlich</option>
-            </select>
-
+            <label>Währung:
+                <select id="currency">
+                    <option value="€">Euro (€)</option>
+                    <option value="$">Dollar ($)</option>
+                    <option value="£">Pfund (£)</option>
+                </select>
+            </label>
+            <label>Betrag: <input type="number" id="amount" required></label>
+            <label>Intervall:
+                <select id="interval">
+                    <option value="daily">Täglich</option>
+                    <option value="weekly">Wöchentlich</option>
+                    <option value="monthly">Monatlich</option>
+                </select>
+            </label>
             <button type="submit">Speichern</button>
         </form>
     </div>
 
-    <!-- Modales Fenster für Ausgaben-Eingabe -->
-    <div id="expenseWindow" class="modal" style="display:none;">
-        <h2>Ausgaben Eingeben</h2>
+    <!-- Ausgaben-Fenster -->
+    <div id="expenseWindow" style="display: none;">
+        <h2>Ausgabe hinzufügen</h2>
         <form id="expenseForm">
-            <label for="expenseAmount">Betrag:</label>
-            <input type="number" id="expenseAmount" placeholder="Betrag eingeben" required />
-
-            <label for="expenseReason">Grund:</label>
-            <input type="text" id="expenseReason" placeholder="Grund der Ausgabe" required />
-
-            <button type="submit">Ausgabe Hinzufügen</button>
+            <label>Betrag: <input type="number" id="expenseAmount" required></label>
+            <label>Grund: <input type="text" id="expenseReason" required></label>
+            <label>Datum: <input type="date" id="expenseDate" required></label>
+            <button type="submit">Hinzufügen</button>
         </form>
+
+        <!-- Budget-Übersicht -->
+        <div id="budgetOverview">
+            <h2>Budget-Übersicht</h2>
+            <p><strong>Gesamtbudget:</strong> <span id="totalBudget">0</span></p>
+            <p><strong>Verbleibendes Budget:</strong> <span id="remainingBudget">0</span></p>
+        </div>
+
+        <!-- Analyse & Graph -->
+        <button id="toggleGraphBtn">Ausgabenanalyse anzeigen</button>
+        <canvas id="expenseChart" width="400" height="200" style="display: none;"></canvas>
     </div>
 
-    <!-- Analysebereich für Ausgaben (Graph ist standardmäßig versteckt) -->
-    <div id="analysisWindow" class="modal" style="display:none;">
-        <h2>Analyse Ihrer Ausgaben</h2>
-        <canvas id="expenseChart" style="display:none;"></canvas>
-        <button id="toggleGraphBtn">Graph anzeigen/verbergen</button>
-    </div>
-
-    <!-- Licht-/Dunkelmodus-Schalter -->
-    <div id="lightDarkMode">
-        <button id="toggleMode">Light Mode / Dark Mode</button>
+    <!-- Einstellungen -->
+    <div id="settings">
+        <button id="toggleMode">Dark/Light Mode</button>
     </div>
 
     <script src="script.js"></script>
