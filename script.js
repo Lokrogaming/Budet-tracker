@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+    checkBudget(); // Überprüft, ob bereits ein Budget gesetzt wurde
+});
+
 document.getElementById('startButton').addEventListener('click', () => {
     document.getElementById('intro').style.display = 'none';
     document.getElementById('budgetSettings').style.display = 'block';
@@ -20,6 +24,7 @@ document.getElementById('budgetForm').addEventListener('submit', (e) => {
     localStorage.setItem('budgetAmount', amount);
     localStorage.setItem('budgetInterval', interval);
     localStorage.setItem('budgetRemaining', amount);
+    localStorage.setItem('budgetSet', 'true'); // Speichert, dass ein Budget gesetzt wurde
 
     alert('Budget gespeichert!');
 
@@ -28,13 +33,25 @@ document.getElementById('budgetForm').addEventListener('submit', (e) => {
     document.getElementById('budgetSettings').style.display = 'none';
 });
 
+// Überprüft, ob ein Budget existiert
+function checkBudget() {
+    const budgetSet = localStorage.getItem('budgetSet');
+    if (budgetSet) {
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('budgetSettings').style.display = 'none';
+        document.getElementById('expenseWindow').style.display = 'block';
+        updateBudgetDisplay();
+    } else {
+        document.getElementById('intro').style.display = 'block';
+    }
+}
+
 // Aktualisiert das Budget-Display
 function updateBudgetDisplay() {
     const currency = localStorage.getItem('budgetCurrency') || '€';
     let remaining = parseFloat(localStorage.getItem('budgetRemaining')) || 0;
     let total = parseFloat(localStorage.getItem('budgetAmount')) || 0;
 
-    document.getElementById('budgetStatus').innerText = `Verbleibendes Budget: ${remaining.toFixed(2)} ${currency} von ${total.toFixed(2)} ${currency}`;
     document.getElementById('totalBudget').innerText = total.toFixed(2) + " " + currency;
     document.getElementById('remainingBudget').innerText = remaining.toFixed(2) + " " + currency;
 
@@ -124,4 +141,4 @@ document.getElementById('toggleGraphBtn').addEventListener('click', () => {
 });
 
 // Initialer Budget-Check
-updateBudgetDisplay();
+checkBudget();
