@@ -1,18 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    checkBudget(); // Überprüft, ob bereits ein Budget gesetzt wurde
+    checkBudget();
 });
 
+// Startbildschirm verbergen und Budget-Einstellungen anzeigen
 document.getElementById('startButton').addEventListener('click', () => {
     document.getElementById('intro').style.display = 'none';
     document.getElementById('budgetSettings').style.display = 'block';
 });
 
-// Darkmode Switch
+// Darkmode-Switch
 document.getElementById('toggleMode').addEventListener('click', () => {
     document.body.classList.toggle('darkmode');
 });
 
-// Budget speichern und Anzeige aktivieren
+// Budget speichern und Fenster umschalten
 document.getElementById('budgetForm').addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -20,17 +21,22 @@ document.getElementById('budgetForm').addEventListener('submit', (e) => {
     const amount = parseFloat(document.getElementById('amount').value);
     const interval = document.getElementById('interval').value;
 
+    if (amount <= 0 || isNaN(amount)) {
+        alert('Bitte geben Sie ein gültiges Budget ein!');
+        return;
+    }
+
     localStorage.setItem('budgetCurrency', currency);
     localStorage.setItem('budgetAmount', amount);
     localStorage.setItem('budgetInterval', interval);
     localStorage.setItem('budgetRemaining', amount);
-    localStorage.setItem('budgetSet', 'true'); // Speichert, dass ein Budget gesetzt wurde
+    localStorage.setItem('budgetSet', 'true');
 
     alert('Budget gespeichert!');
-
+    
     updateBudgetDisplay();
-    document.getElementById('expenseWindow').style.display = 'block';
     document.getElementById('budgetSettings').style.display = 'none';
+    document.getElementById('expenseWindow').style.display = 'block';
 });
 
 // Überprüft, ob ein Budget existiert
@@ -46,7 +52,7 @@ function checkBudget() {
     }
 }
 
-// Aktualisiert das Budget-Display
+// Aktualisiert die Budget-Anzeige
 function updateBudgetDisplay() {
     const currency = localStorage.getItem('budgetCurrency') || '€';
     let remaining = parseFloat(localStorage.getItem('budgetRemaining')) || 0;
@@ -83,6 +89,11 @@ document.getElementById('expenseForm').addEventListener('submit', (e) => {
     const reason = document.getElementById('expenseReason').value;
     const date = document.getElementById('expenseDate').value;
 
+    if (amount <= 0 || isNaN(amount)) {
+        alert('Bitte geben Sie einen gültigen Betrag ein!');
+        return;
+    }
+
     let remaining = parseFloat(localStorage.getItem('budgetRemaining')) || 0;
     remaining -= amount;
     localStorage.setItem('budgetRemaining', remaining);
@@ -97,7 +108,7 @@ document.getElementById('expenseForm').addEventListener('submit', (e) => {
     renderChart();
 });
 
-// Graph erstellen
+// Graph erstellen oder aktualisieren
 function renderChart() {
     const ctx = document.getElementById('expenseChart').getContext('2d');
     const data = JSON.parse(localStorage.getItem('expenseData')) || [];
@@ -127,17 +138,13 @@ function renderChart() {
         }
     });
 
-    document.getElementById('expenseChart').style.display = 'block';
+    document.getElementById('chartContainer').style.display = 'block';
 }
 
-// Graph-Button
+// Graph umschalten
 document.getElementById('toggleGraphBtn').addEventListener('click', () => {
-    const chartCanvas = document.getElementById('expenseChart');
-    if (chartCanvas.style.display === 'none') {
-        renderChart();
-    } else {
-        chartCanvas.style.display = 'none';
-    }
+    const chartContainer = document.getElementById('chartContainer');
+    chartContainer.style.display = chartContainer.style.display === 'none' ? 'block' : 'none';
 });
 
 // Initialer Budget-Check
