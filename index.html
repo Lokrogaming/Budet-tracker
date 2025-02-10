@@ -20,4 +20,49 @@
 
     <section id="intro">
         <h1>Willkommen beim Budget-Tracker!</h1>
-        <button id="startButton
+        <button id="startButton">Los geht's</button>
+    </section>
+
+    <section id="budgetSettings" style="display: none;">
+        <h2>Budget einrichten</h2>
+        <form id="budgetForm">
+            <label>Währung:</label>
+            <select id="currency">
+                <option value="€">Euro (€)</option>
+                <option value="$">US-Dollar ($)</option>
+            </select>
+            <label>Betrag:</label>
+            <input type="number" id="amount">
+            <label>Intervall:</label>
+            <select id="interval">
+                <option value="daily">Täglich</option>
+                <option value="weekly">Wöchentlich</option>
+            </select>
+            <button type="submit">Speichern</button>
+        </form>
+    </section>
+
+    <section id="expenseWindow" style="display: none;">
+        <h2>Dein Budget</h2>
+        <div id="budgetDisplay" class="green">Lade...</div>
+        <button id="toggleGraphBtn">📊 Analysedaten</button>
+        
+        <div id="chartContainer" style="display: none;">
+            <canvas id="expenseChart"></canvas>
+        </div>
+
+        <form id="expenseForm">
+            <label>Betrag:</label>
+            <input type="number" id="expenseAmount">
+            <label>Grund:</label>
+            <input type="text" id="expenseReason">
+            <label>Datum:</label>
+            <input type="date" id="expenseDate">
+            <button type="submit">Ausgabe speichern</button>
+        </form>
+    </section>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
