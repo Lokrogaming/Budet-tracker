@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     checkBudget();
     loadTheme();
+    displayExpenses(); // Liste der Ausgaben beim Start anzeigen
 
     const startButton = document.getElementById('startButton');
     if (startButton) {
@@ -13,28 +14,38 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('intro').style.display = 'none';
             document.getElementById('budgetSettings').style.display = 'block';
         });
-    } else {
-        console.error("Fehler: 'startButton' nicht gefunden.");
     }
 
-    const budgetForm = document.getElementById('budgetForm');
-    if (budgetForm) {
-        budgetForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const currency = document.getElementById('currency').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const interval = document.getElementById('interval').value;
+    document.getElementById('budgetForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currency = document.getElementById('currency').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const interval = document.getElementById('interval').value;
 
-            if (!isNaN(amount) && amount > 0) {
-                saveBudget(currency, amount, interval);
-                document.getElementById('budgetSettings').style.display = 'none';
-                document.getElementById('expenseWindow').style.display = 'block';
-                displayBudget();
-            } else {
-                alert("Bitte geben Sie einen gültigen Betrag ein.");
-            }
-        });
-    }
+        if (!isNaN(amount) && amount > 0) {
+            saveBudget(currency, amount, interval);
+            document.getElementById('budgetSettings').style.display = 'none';
+            document.getElementById('expenseWindow').style.display = 'block';
+            displayBudget();
+        } else {
+            alert("Bitte geben Sie einen gültigen Betrag ein.");
+        }
+    });
+
+    document.getElementById('expenseForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const amount = parseFloat(document.getElementById('expenseAmount').value);
+        const reason = document.getElementById('expenseReason').value;
+        const date = document.getElementById('expenseDate').value;
+
+        if (!isNaN(amount) && amount > 0) {
+            saveExpense(amount, reason, date);
+            displayExpenses();
+            updateBudgetDisplay();
+        } else {
+            alert("Die Ausgabe darf nicht negativ sein.");
+        }
+    });
 
     document.getElementById('themeToggle').addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
@@ -46,13 +57,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function checkBudget() {
-    const budgetAmount = localStorage.getItem('budgetAmount');
-    if (budgetAmount) {
-        document.getElementById('budgetSettings').style.display = 'none';
-        document.getElementById('expenseWindow').style.display = 'block';
-        displayBudget();
-    }
+function displayExpenses() {
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const expenseList = document.getElementById('expenseList'); 
+
+    if (!expenseList) return;
+
+    expenseList.innerHTML = "";
+
+    expenses.forEach((expense, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${expense.date} - ${expense.reason}: ${expense.amount.toFixed(2)} ${localStorage.getItem('budgetCurrency')}`;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "❌";
+        deleteButton.onclick = () => removeExpense(index);
+        
+        li.appendChild(deleteButton);
+        expenseList.appendChild(li);
+    });
+}
+
+function removeExpense(index) {
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    expenses.splice(index, 1);
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    displayExpenses();
 }
 
 function saveBudget(currency, amount, interval) {
@@ -61,27 +91,13 @@ function saveBudget(currency, amount, interval) {
     localStorage.setItem('budgetInterval', interval);
 }
 
-function displayBudget() {
-    const currency = localStorage.getItem('budgetCurrency');
-    const amount = parseFloat(localStorage.getItem('budgetAmount'));
-    const remaining = amount - getTotalExpenses();
-    const budgetDisplay = document.getElementById('budgetDisplay');
-
-    budgetDisplay.textContent = `${currency} ${remaining.toFixed(2)} verbleibend`;
-
-    budgetDisplay.className = ''; 
-    if (remaining > amount * 0.5) {
-        budgetDisplay.classList.add('green');
-    } else if (remaining > amount * 0.1) {
-        budgetDisplay.classList.add('yellow');
-    } else {
-        budgetDisplay.classList.add('red');
+function checkBudget() {
+    const budgetAmount = localStorage.getItem('budgetAmount');
+    if (budgetAmount) {
+        document.getElementById('budgetSettings').style.display = 'none';
+        document.getElementById('expenseWindow').style.display = 'block';
+        displayBudget();
     }
-}
-
-function getTotalExpenses() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    return expenses.reduce((total, expense) => total + parseFloat(expense.amount), 0);
 }
 
 function loadTheme() {

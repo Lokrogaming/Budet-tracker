@@ -24,7 +24,13 @@
 
         <div id="budgetSettings" style="display: none;">
             <form id="budgetForm">
-                <label>Währung: <input type="text" id="currency" required></label>
+                <label>Währung:
+                    <select id="currency">
+                        <option value="€">Euro (€)</option>
+                        <option value="$">US-Dollar ($)</option>
+                        <option value="£">Pfund (£)</option>
+                    </select>
+                </label>
                 <label>Betrag: <input type="number" id="amount" required></label>
                 <label>Intervall:
                     <select id="interval">
@@ -48,6 +54,9 @@
                 <button type="submit">Ausgabe speichern</button>
             </form>
         </div>
+
+        <h2>Deine Ausgaben:</h2>
+        <ul id="expenseList"></ul> <!-- Hier werden die Ausgaben angezeigt -->
 
         <button id="resetButton">Daten zurücksetzen</button>
     </div>
