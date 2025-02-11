@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(
         document.getElementById('loadingScreen').style.display = 'none';
         document.getElementById('content').style.display = 'block';
     }, 1200);// Simulierte Ladezeit
@@ -174,8 +175,4 @@ function resetAll() {
         window.location.reload();
     }
 }
-document.getElementById('resetButton').addEventListener('click', () => {
-   if (confirm('Möchten sie alles zurücksetzen?')) {
-       localstorage.clear();
-   }
-}
+
