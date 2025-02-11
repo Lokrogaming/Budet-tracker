@@ -1,19 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(
+    setTimeout(() => {
         document.getElementById('loadingScreen').style.display = 'none';
         document.getElementById('content').style.display = 'block';
-    }, 1200);// Simulierte Ladezeit
+    }, 1500); // Simulierte Ladezeit
 
-    // Wenn das Budget bereits gesetzt wurde, den Bereich anzeigen
-    checkBudget();
-    
-    // EventListener für das Starten des Budgeteinrichtungsformulars
+    checkBudget(); // Prüft, ob Budget vorhanden ist
+    loadTheme(); // Lädt das gespeicherte Design
+
+    // Startknopf für Budget-Setup
     document.getElementById('startButton').addEventListener('click', () => {
         document.getElementById('intro').style.display = 'none';
         document.getElementById('budgetSettings').style.display = 'block';
     });
 
-    // Formular für Budget speichern
+    // Budget speichern
     document.getElementById('budgetForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const currency = document.getElementById('currency').value;
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Formular für Ausgaben speichern
+    // Ausgaben speichern
     document.getElementById('expenseForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const expenseAmount = parseFloat(document.getElementById('expenseAmount').value);
@@ -46,20 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // EventListener für den Graphen-Button
-    document.getElementById('toggleGraphBtn').addEventListener('click', () => {
-        const chartContainer = document.getElementById('chartContainer');
-        chartContainer.style.display = chartContainer.style.display === 'none' ? 'block' : 'none';
-        createGraph();
+    // Darkmode-Switch
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
     });
 
-    // EventListener für den Reset-Button
+    // Reset-Button
     document.getElementById('resetButton').addEventListener('click', () => {
         resetAll();
     });
 });
 
-// Budget und Ausgaben im localStorage speichern
+// **Speichert und lädt das Budget**
 function saveBudget(currency, amount, interval) {
     localStorage.setItem('budgetCurrency', currency);
     localStorage.setItem('budgetAmount', amount);
@@ -72,17 +72,17 @@ function saveExpense(amount, reason, date) {
     localStorage.setItem('expenses', JSON.stringify(expenses));
 }
 
-// Budget anzeigen
+// **Budget anzeigen**
 function displayBudget() {
     const currency = localStorage.getItem('budgetCurrency');
     const amount = parseFloat(localStorage.getItem('budgetAmount'));
-    const interval = localStorage.getItem('budgetInterval');
+    const remaining = amount - getTotalExpenses();
     const budgetDisplay = document.getElementById('budgetDisplay');
 
-    budgetDisplay.textContent = `${currency} ${amount.toFixed(2)} (${interval})`;
+    budgetDisplay.textContent = `${currency} ${remaining.toFixed(2)} verbleibend`;
 
-    // Berechnung der verbleibenden Budget und Farben ändern
-    const remaining = amount - getTotalExpenses();
+    // **Budget-Farben ändern**
+    budgetDisplay.className = ''; 
     if (remaining > amount * 0.5) {
         budgetDisplay.classList.add('green');
     } else if (remaining > amount * 0.1) {
@@ -92,87 +92,18 @@ function displayBudget() {
     }
 }
 
-// Ausgaben anzeigen
-function displayExpenses() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const expenseList = document.getElementById('expenseWindow');
-    const expenseListContainer = document.createElement('ul');
-    
-    expenses.forEach(expense => {
-        const li = document.createElement('li');
-        li.textContent = `${expense.date} - ${expense.reason}: ${expense.amount.toFixed(2)} ${localStorage.getItem('budgetCurrency')}`;
-        expenseListContainer.appendChild(li);
-    });
-
-    expenseList.appendChild(expenseListContainer);
-}
-
-// Verbleibendes Budget aktualisieren
-function updateBudgetDisplay() {
-    const amount = parseFloat(localStorage.getItem('budgetAmount'));
-    const remaining = amount - getTotalExpenses();
-    const budgetDisplay = document.getElementById('budgetDisplay');
-    budgetDisplay.textContent = `${localStorage.getItem('budgetCurrency')} ${remaining.toFixed(2)} verbleibend`;
-
-    if (remaining > amount * 0.5) {
-        budgetDisplay.classList.remove('yellow', 'red');
-        budgetDisplay.classList.add('green');
-    } else if (remaining > amount * 0.1) {
-        budgetDisplay.classList.remove('green', 'red');
-        budgetDisplay.classList.add('yellow');
-    } else {
-        budgetDisplay.classList.remove('green', 'yellow');
-        budgetDisplay.classList.add('red');
+// **Darkmode speichern**
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
     }
 }
 
-// Berechnung der gesamten Ausgaben
-function getTotalExpenses() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    return expenses.reduce((total, expense) => total + expense.amount, 0);
-}
-
-// Budget prüfen, wenn die Seite geladen wird
-function checkBudget() {
-    const currency = localStorage.getItem('budgetCurrency');
-    if (currency) {
-        displayBudget();
-        document.getElementById('expenseWindow').style.display = 'block';
-    }
-}
-
-// Graphen für Ausgaben anzeigen
-function createGraph() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const labels = expenses.map(expense => expense.date);
-    const data = expenses.map(expense => expense.amount);
-
-    const ctx = document.getElementById('expenseChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Ausgaben',
-                data: data,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        }
-    });
-}
-
-// Reset alle Daten zurücksetzen
+// **Reset-Funktion**
 function resetAll() {
     if (confirm('Möchten Sie wirklich alle Daten zurücksetzen?')) {
-        localStorage.removeItem('budgetCurrency');
-        localStorage.removeItem('budgetAmount');
-        localStorage.removeItem('budgetInterval');
-        localStorage.removeItem('expenses');
-        
-        // Seite neu laden, um alles zu resetten
+        localStorage.clear();
         window.location.reload();
     }
 }
-
