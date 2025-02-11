@@ -5,66 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tracker</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Ladebildschirm -->
+    <div id="loadingScreen">Lädt...</div>
 
-<!-- Ladebildschirm -->
-<div id="loadingScreen">
-    <p>Lädt...</p>
-    <img src="assets/Loading.gif" alt="Lädt...">
-</div>
-
-<!-- Hauptinhalt -->
-<div id="content" style="display: none;">
-    <button id="toggleMode">🌙/☀️</button>
-
-    <section id="intro">
-        <h1>Willkommen beim Budget-Tracker!</h1>
-        <button id="startButton">Los geht's</button>
-    </section>
-    <button id="resetButton">Reset</button>
-
-    <section id="budgetSettings" style="display: none;">
-        <h2>Budget einrichten</h2>
-        <form id="budgetForm">
-            <label>Währung:</label>
-            <select id="currency">
-                <option value="€">Euro (€)</option>
-                <option value="$">US-Dollar ($)</option>
-            </select>
-            <label>Betrag:</label>
-            <input type="number" id="amount">
-            <label>Intervall:</label>
-            <select id="interval">
-                <option value="daily">Täglich</option>
-                <option value="weekly">Wöchentlich</option>
-            </select>
-            <button type="submit">Speichern</button>
-        </form>
-    </section>
-
-    <section id="expenseWindow" style="display: none;">
-        <h2>Dein Budget</h2>
-        <div id="budgetDisplay" class="green">Lade...</div>
-        <button id="toggleGraphBtn">📊 Analysedaten</button>
+    <!-- Hauptinhalt -->
+    <div id="content" style="display: none;">
+        <h1>Budget Tracker</h1>
         
-        <div id="chartContainer" style="display: none;">
-            <canvas id="expenseChart"></canvas>
+        <!-- Darkmode-Schalter -->
+        <button id="themeToggle">Darkmode</button>
+
+        <!-- Budget-Setup -->
+        <div id="budgetSettings">
+            <form id="budgetForm">
+                <label>Währung: <input type="text" id="currency" required></label>
+                <label>Betrag: <input type="number" id="amount" required></label>
+                <label>Intervall:
+                    <select id="interval">
+                        <option value="daily">Täglich</option>
+                        <option value="weekly">Wöchentlich</option>
+                        <option value="monthly">Monatlich</option>
+                        <option value="yearly">Jährlich</option>
+                    </select>
+                </label>
+                <button type="submit">Speichern</button>
+            </form>
         </div>
 
-        <form id="expenseForm">
-            <label>Betrag:</label>
-            <input type="number" id="expenseAmount">
-            <label>Grund:</label>
-            <input type="text" id="expenseReason">
-            <label>Datum:</label>
-            <input type="date" id="expenseDate">
-            <button type="submit">Ausgabe speichern</button>
-        </form>
-    </section>
-</div>
-<a id="ppbutton" href="Privacy_Policy.md" >PRIVACY POLICY</a>
-<script src="script.js"></script>
+        <!-- Budget-Anzeige -->
+        <h2>Budget: <span id="budgetDisplay"></span></h2>
+
+        <!-- Ausgaben-Fenster -->
+        <div id="expenseWindow">
+            <form id="expenseForm">
+                <label>Betrag: <input type="number" id="expenseAmount" required></label>
+                <label>Grund: <input type="text" id="expenseReason" required></label>
+                <label>Datum: <input type="date" id="expenseDate" required></label>
+                <button type="submit">Ausgabe speichern</button>
+            </form>
+        </div>
+
+        <!-- Reset-Button -->
+        <button id="resetButton">Daten zurücksetzen</button>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
