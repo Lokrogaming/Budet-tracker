@@ -7,20 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Ladebildschirm -->
     <div id="loadingScreen">
-        <img src="assets/Loading.gif">
-        <p>Lädt...</p>
+        <img src="assets/Loading.gif" alt="Lädt...">
     </div>
 
-    <!-- Hauptinhalt -->
     <div id="content" style="display: none;">
         <h1>Budget Tracker</h1>
         
-        <!-- Darkmode-Schalter -->
         <button id="themeToggle">Darkmode</button>
 
-        <!-- Budget-Setup -->
         <div id="budgetSettings">
             <form id="budgetForm">
                 <label>Währung: <input type="text" id="currency" required></label>
@@ -37,10 +32,8 @@
             </form>
         </div>
 
-        <!-- Budget-Anzeige -->
         <h2>Budget: <span id="budgetDisplay"></span></h2>
 
-        <!-- Ausgaben-Fenster -->
         <div id="expenseWindow">
             <form id="expenseForm">
                 <label>Betrag: <input type="number" id="expenseAmount" required></label>
@@ -50,7 +43,6 @@
             </form>
         </div>
 
-        <!-- Reset-Button -->
         <button id="resetButton">Daten zurücksetzen</button>
     </div>
 

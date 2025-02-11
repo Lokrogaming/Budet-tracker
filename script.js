@@ -2,18 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         document.getElementById('loadingScreen').style.display = 'none';
         document.getElementById('content').style.display = 'block';
-    }, 1500); // Simulierte Ladezeit
+    }, 1500);
 
-    checkBudget(); // Prüft, ob Budget vorhanden ist
-    loadTheme(); // Lädt das gespeicherte Design
+    checkBudget();
+    loadTheme();
 
-    // Startknopf für Budget-Setup
     document.getElementById('startButton').addEventListener('click', () => {
         document.getElementById('intro').style.display = 'none';
         document.getElementById('budgetSettings').style.display = 'block';
     });
 
-    // Budget speichern
     document.getElementById('budgetForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const currency = document.getElementById('currency').value;
@@ -30,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Ausgaben speichern
     document.getElementById('expenseForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const expenseAmount = parseFloat(document.getElementById('expenseAmount').value);
@@ -46,20 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Darkmode-Switch
     document.getElementById('themeToggle').addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
         localStorage.setItem('theme', theme);
     });
 
-    // Reset-Button
     document.getElementById('resetButton').addEventListener('click', () => {
         resetAll();
     });
 });
 
-// **Speichert und lädt das Budget**
+function checkBudget() {
+    const budgetAmount = localStorage.getItem('budgetAmount');
+    if (budgetAmount) {
+        document.getElementById('budgetSettings').style.display = 'none';
+        document.getElementById('expenseWindow').style.display = 'block';
+        displayBudget();
+    }
+}
+
 function saveBudget(currency, amount, interval) {
     localStorage.setItem('budgetCurrency', currency);
     localStorage.setItem('budgetAmount', amount);
@@ -72,7 +75,6 @@ function saveExpense(amount, reason, date) {
     localStorage.setItem('expenses', JSON.stringify(expenses));
 }
 
-// **Budget anzeigen**
 function displayBudget() {
     const currency = localStorage.getItem('budgetCurrency');
     const amount = parseFloat(localStorage.getItem('budgetAmount'));
@@ -81,7 +83,6 @@ function displayBudget() {
 
     budgetDisplay.textContent = `${currency} ${remaining.toFixed(2)} verbleibend`;
 
-    // **Budget-Farben ändern**
     budgetDisplay.className = ''; 
     if (remaining > amount * 0.5) {
         budgetDisplay.classList.add('green');
@@ -92,7 +93,11 @@ function displayBudget() {
     }
 }
 
-// **Darkmode speichern**
+function getTotalExpenses() {
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    return expenses.reduce((total, expense) => total + parseFloat(expense.amount), 0);
+}
+
 function loadTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -100,7 +105,6 @@ function loadTheme() {
     }
 }
 
-// **Reset-Funktion**
 function resetAll() {
     if (confirm('Möchten Sie wirklich alle Daten zurücksetzen?')) {
         localStorage.clear();
