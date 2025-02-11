@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkBudget();
     loadTheme();
     displayExpenses(); // Liste der Ausgaben beim Start anzeigen
+    updateExpenseChart(); // Graphen initialisieren
 
     const startButton = document.getElementById('startButton');
     if (startButton) {
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isNaN(amount) && amount > 0) {
             saveExpense(amount, reason, date);
             displayExpenses();
-            updateBudgetDisplay();
+            updateExpenseChart();  // Graphen nach jeder Ausgabe aktualisieren
         } else {
             alert("Die Ausgabe darf nicht negativ sein.");
         }
@@ -71,7 +72,10 @@ function displayExpenses() {
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = "❌";
-        deleteButton.onclick = () => removeExpense(index);
+        deleteButton.onclick = () => {
+            removeExpense(index);
+            updateExpenseChart();  // Graphen nach Löschung aktualisieren
+        };
         
         li.appendChild(deleteButton);
         expenseList.appendChild(li);
@@ -105,6 +109,39 @@ function loadTheme() {
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
     }
+}
+
+function updateExpenseChart() {
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    
+    // Erstelle ein Array für die Ausgabenkategorien und Beträge
+    const expenseCategories = expenses.map(expense => expense.reason);
+    const expenseAmounts = expenses.map(expense => expense.amount);
+
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+
+    // Erstelle das Diagramm
+    new Chart(ctx, {
+        type: 'bar', // Diagrammtyp
+        data: {
+            labels: expenseCategories, // Kategorien (Gründe)
+            datasets: [{
+                label: 'Ausgaben',
+                data: expenseAmounts, // Ausgabenbeträge
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
 function resetAll() {
