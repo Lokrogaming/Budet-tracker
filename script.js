@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         document.getElementById('loadingScreen').style.display = 'none';
         document.getElementById('content').style.display = 'block';
-    }, 120); // Simulierte Ladezeit
+    }, ); // Simulierte Ladezeit
 
     // Wenn das Budget bereits gesetzt wurde, den Bereich anzeigen
     checkBudget();
