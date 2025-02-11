@@ -175,3 +175,8 @@ function resetAll() {
         window.location.reload();
     }
 }
+document.getElementById('resetButton').addEventListener('click', () => {
+   if (confirm('Möchten sie alles zurücksetzen?')) {
+       localstorage.clear();
+   }
+}
