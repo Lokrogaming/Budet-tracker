@@ -23,6 +23,12 @@ body {
 #loadingScreen img {
     width: 100px;
     height: 100px;
+    animation: fadeIn 1s infinite alternate;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
 }
 
 .dark-mode #loadingScreen {
@@ -45,4 +51,3 @@ button:hover {
 .green { color: green; }
 .yellow { color: orange; }
 .red { color: red; }
-

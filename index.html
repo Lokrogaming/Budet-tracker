@@ -7,16 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Ladebildschirm -->
     <div id="loadingScreen">
         <img src="assets/Loading.gif" alt="Lädt...">
     </div>
 
+    <!-- Hauptinhalt -->
     <div id="content" style="display: none;">
         <h1>Budget Tracker</h1>
         
         <button id="themeToggle">Darkmode</button>
 
-        <div id="budgetSettings">
+        <div id="intro">
+            <button id="startButton">Los geht's</button>
+        </div>
+
+        <div id="budgetSettings" style="display: none;">
             <form id="budgetForm">
                 <label>Währung: <input type="text" id="currency" required></label>
                 <label>Betrag: <input type="number" id="amount" required></label>
@@ -34,7 +40,7 @@
 
         <h2>Budget: <span id="budgetDisplay"></span></h2>
 
-        <div id="expenseWindow">
+        <div id="expenseWindow" style="display: none;">
             <form id="expenseForm">
                 <label>Betrag: <input type="number" id="expenseAmount" required></label>
                 <label>Grund: <input type="text" id="expenseReason" required></label>
@@ -46,6 +52,6 @@
         <button id="resetButton">Daten zurücksetzen</button>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
